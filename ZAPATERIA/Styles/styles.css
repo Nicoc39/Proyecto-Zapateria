@@ -1,0 +1,162 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+}
+
+header {
+  background-color: #222;
+  color: white;
+  text-align: center;
+  padding: 20px 0;
+}
+
+
+
+/* Estilos para la barra de búsqueda */
+.barra-busqueda {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.barra-busqueda input {
+  width: 300px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+}
+
+.barra-busqueda button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+}
+
+.barra-busqueda button:hover {
+  background-color: #0056b3;
+}
+
+/* fin barra busqueda */
+
+.catalogo {
+  padding: 20px;
+  text-align: center;
+}
+
+.catalogo h2 {
+  margin-bottom: 30px;
+}
+
+.producto {
+  display: inline-block;
+  width: 250px;
+  margin: 15px;
+  padding: 15px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.producto img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+button {
+  margin-top: 10px;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+footer {
+  background-color: #eee;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Estilo uniforme para los botones del header */
+.nav-pills .nav-item .btn, 
+.nav-pills .nav-item .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px; /* Altura uniforme */
+    padding: 0 15px; /* Espaciado interno */
+    font-size: 16px; /* Tamaño de fuente */
+    border-radius: 5px; /* Bordes redondeados */
+    text-align: center;
+}
+
+/* Asegurar que los botones estén alineados */
+.nav-pills .nav-item {
+    display: flex;
+    align-items: center;
+}
+
+/* Asegurar que el botón "Nuestros productos" tenga el mismo estilo */
+#btn-nuestros-productos {
+  background-color: #007bff; /* Color de fondo */
+  color: white; /* Color del texto */
+  border: 1px solid #007bff; /* Borde azul */
+  border-radius: 5px; /* Bordes redondeados */
+  padding: 10px 15px; /* Espaciado interno */
+  font-size: 16px; /* Tamaño de fuente */
+  text-align: center;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave */
+  height: 40px; /* Altura uniforme */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* Hover para el botón */
+#btn-nuestros-productos:hover {
+  background-color: #0056b3; /* Fondo más oscuro */
+  color: white; /* Texto blanco */
+}
+
+/* Estilo uniforme para los enlaces del header */
+.nav-pills .nav-link {
+  color: white; /* Color del texto */
+  background-color: #007bff; /* Fondo azul */
+  border: 1px solid #007bff; /* Borde azul */
+  border-radius: 5px; /* Bordes redondeados */
+  padding: 10px 15px; /* Espaciado interno */
+  text-align: center;
+  font-size: 16px; /* Tamaño de fuente */
+  margin-right: 5px; /* Espaciado entre botones */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave */
+}
+
+/* Estilo al pasar el cursor */
+.nav-pills .nav-link:hover {
+  background-color: #0056b3; /* Fondo más oscuro */
+  color: white; /* Texto blanco */
+}
+
+/* Estilo para el contenedor colapsable */
+#contentId {
+  margin-top: 10px; /* Espaciado superior */
+  background-color: #f8f9fa; /* Fondo claro */
+  border: 1px solid #ddd; /* Borde */
+  border-radius: 5px; /* Bordes redondeados */
+  padding: 10px; /* Espaciado interno */
+}
+
