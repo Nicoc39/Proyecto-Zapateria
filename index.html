@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tienda de Zapatos</title>
+    <!-- para libreria de iconos -->
+    <script src="https://kit.fontawesome.com/1715b0334b.js" crossorigin="anonymous"></script>
+    <!-- libreria de estilos-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="Styles/styles.css"> 
+    <!-- libreria de scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script> 
+
+</head>
+
+<body>
+<!-- cambios en git?-->
+    <header class="d-flex flex-wrap justify-content-between py-3 mb-4 border-bottom">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+            <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+            <span class="fs-4  text-light"">Tienda de Zapatos</span>
+        </a>
+    
+        <ul class="nav nav-pills align-items-center">
+            <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Inicio</a></li>
+            <li class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" id="dropdownProductos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Nuestros productos
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownProductos">
+                    <li><a class="dropdown-item" href="#">Zapato Deportivo</a></li>
+                    <li><a class="dropdown-item" href="#">Zapato Casual</a></li>
+                    <li><a class="dropdown-item" href="#">Zapato Elegante</a></li>
+                </ul>
+            </li>
+            <li class="nav-item"><a href="#carrito" class="nav-link">Carrito</a></li>
+            <li class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" id="dropdownUsuario" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Usuario
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownUsuario">
+                    <li><a class="dropdown-item" href="#" id="btn-ingresar">Ingresar</a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-registrarse">Registrarse</a></li>
+                </ul>
+            </li>
+            <li class="nav-item"><a href="#about" class="nav-link">Contacto</a></li>
+        </ul>
+    </header>
+
+    <section class="catalogo">
+        <h2>Catálogo</h2>
+
+        <div class="producto">
+            <h3>Zapato Deportivo</h3>
+            <img src="https://via.placeholder.com/250x200?text=Zapato+Deportivo" alt="Zapato Deportivo">
+            <p>Precio: $59.99</p>
+            <button>Comprar</button>
+        </div>
+
+        <div class="producto">
+            <h3>Zapato Casual</h3>
+            <img src="https://via.placeholder.com/250x200?text=Zapato+Casual" alt="Zapato Casual">
+            <p>Precio: $49.99</p>
+            <button>Comprar</button>
+        </div>
+
+        <div class="producto">
+            <h3>Zapato Elegante</h3>
+            <img src="https://via.placeholder.com/250x200?text=Zapato+Elegante" alt="Zapato Elegante">
+            <p>Precio: $89.99</p>
+            <button>Comprar</button>
+        </div>
+    </section>
+
+    <footer>
+        <h2>Contacto</h2>
+        <p>Correo: contacto@tiendadezapatos.com</p>
+        <p>Teléfono: +1 234 567 890</p>
+        <i class="fa-brands fa-facebook"></i><p>Facebook</p>
+    </footer>
+    <script src="scripts/usuario.js"></script>
+</body>
+</html>
+
