@@ -12,39 +12,6 @@ header {
   padding: 20px 0;
 }
 
-
-
-/* Estilos para la barra de búsqueda */
-.barra-busqueda {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.barra-busqueda input {
-  width: 300px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px 0 0 5px;
-  outline: none;
-}
-
-.barra-busqueda button {
-  padding: 10px 20px;
-  border: none;
-  background-color: #007bff;
-  color: white;
-  border-radius: 0 5px 5px 0;
-  cursor: pointer;
-}
-
-.barra-busqueda button:hover {
-  background-color: #0056b3;
-}
-
-/* fin barra busqueda */
-
 .catalogo {
   padding: 20px;
   text-align: center;
