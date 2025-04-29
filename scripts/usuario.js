@@ -1,7 +1,7 @@
 const usuarios = []; // Ahora es accesible globalmente
 
 // Función para mostrar un formulario de ingreso
-function mostrarFormularioIngreso() {
+function formularioIngreso() {
     const email = prompt("Ingrese su correo electrónico:");
     const password = prompt("Ingrese su contraseña:");
 
@@ -14,7 +14,7 @@ function mostrarFormularioIngreso() {
 }
 
 // Función para mostrar un formulario de registro
-function mostrarFormularioRegistro() {
+function formularioRegistro() {
     const nombre = prompt("Ingrese su nombre:");
     const email = prompt("Ingrese su correo electrónico:");
     const password = prompt("Cree una contraseña:");
@@ -29,13 +29,3 @@ function mostrarFormularioRegistro() {
     }
 }
 
-// Eventos para los botones
-document.getElementById('btn-ingresar').addEventListener('click', (e) => {
-    e.preventDefault();
-    mostrarFormularioIngreso();
-});
-
-document.getElementById('btn-registrarse').addEventListener('click', (e) => {
-    e.preventDefault();
-    mostrarFormularioRegistro();
-});
