@@ -1,4 +1,4 @@
-const usuarios = []; // Ahora es accesible globalmente
+const usuarios = []; 
 
 // Función para mostrar un formulario de ingreso
 function formularioIngreso() {
@@ -25,7 +25,6 @@ function formularioRegistro() {
     } else {
         usuarios.push({ nombre, email, password });
         alert("Usuario registrado con éxito.");
-        console.log("Usuarios registrados:", usuarios); // Muestra los usuarios en la consola
+        console.log("Usuarios registrados:", usuarios); 
     }
 }
-

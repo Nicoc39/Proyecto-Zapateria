@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tienda de Zapatos</title>
+    <title>DULCE LOCURA | Calzados y accesorios </title>
     <!-- para libreria de iconos -->
     <script src="https://kit.fontawesome.com/1715b0334b.js" crossorigin="anonymous"></script>
     <!-- libreria de estilos-->
@@ -16,68 +16,72 @@
 </head>
 
 <body>
-    <!-- Header actualizado -->
     <header class="d-flex flex-column align-items-center justify-content-center py-3 mb-4 border-bottom">
         <h1 class="titulo-principal">DULCE LOCURA</h1>
         <p class="subtitulo">Calzados y Accesorios</p>
         <ul class="nav nav-pills align-items-center mt-3">
-            <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Inicio</a></li>
+            <li class="nav-item">
+                <button class="nav-link active" aria-current="page">Inicio</button>
+            </li>
             <li class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" id="dropdownProductos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="nav-link dropdown-toggle" id="dropdownProductos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Nuestros productos
-                </a>
+                </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownProductos">
-                    <li><a class="dropdown-item" href="#">Calzado Damas</a></li>
-                    <li><a class="dropdown-item" href="#">Carteras</a></li>
+                    <li><button class="dropdown-item">Calzado Damas</button></li>
+                    <li><button class="dropdown-item">Carteras</button></li>
                 </ul>
             </li>
-            <li class="nav-item"><a href="#carrito" class="nav-link">Carrito</a></li>
+            <li class="nav-item">
+                <button class="nav-link" onclick="mostrarAcercaDe()">Acerca de</button>
+            </li>
             <li class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" id="dropdownUsuario" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="nav-link dropdown-toggle" id="dropdownUsuario" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Usuario
-                </a>
+                </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownUsuario">
-                    <li><a class="dropdown-item" href="#" onclick="formularioIngreso()">Ingresar</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="formularioRegistro()">Registrarse</a></li>
-                </ul>
+                    <li><button class="dropdown-item" onclick="formularioIngreso()">Ingresar</button></li>
+                    <li><button class="dropdown-item" onclick="formularioRegistro()">Registrarse</button></li>                </ul>
             </li>
-            <li class="nav-item"><a href="#about" class="nav-link">Contacto</a></li>
+            <li class="nav-item">
+                <button class="nav-link" onclick="mostrarCarrito()">Carrito</button>
+            </li>
         </ul>
     </header>
 
-    <section class="catalogo">
-        <h2>Catálogo</h2>
-
+    <h2 class="titulo-catalogo">Catálogo</h2>
+    <section class="catalogo">        
         <div class="producto">
             <h3>Botas Lamaras Negro</h3>
-            <img src="imagenes/Zapato 2.jpg" alt="Botas lamara">
+            <img src="imagenes/Zapato 2.jpg" alt="Botas Lamaras Negro">
             <p>Precio: $170.700</p>
-            <button>Comprar</button>
+            <button onclick="agregarAlCarrito('Botas Lamaras Negro', 170700)">Comprar</button>
         </div>
-
+    
         <div class="producto">
             <h3>Botas Narita Leopardo</h3>
-            <img src="imagenes/Zapato 1.jpg" alt="Botas Leopardo">
+            <img src="imagenes/Zapato 1.jpg" alt="Botas Narita Leopardo">
             <p>Precio: $156.500</p>
-            <button>Comprar</button>
+            <button onclick="agregarAlCarrito('Botas Narita Leopardo', 156500)">Comprar</button>
         </div>
-
+    
         <div class="producto">
             <h3>Borcegos Samy Chocolate</h3>
-            <img src="imagenes/Zapato 4.jpg" alt="Borcegos Samy">
+            <img src="imagenes/Zapato 4.jpg" alt="Borcegos Samy Chocolate">
             <p>Precio: $151.600</p>
-            <button>Comprar</button>
+            <button onclick="agregarAlCarrito('Borcegos Samy Chocolate', 151600)">Comprar</button>
         </div>
     </section>
 
     <footer>
         <h2>Contacto</h2>
-        <p>Correo: contacto@tiendadezapatos.com</p>
+        <p>Correo: Dulcelocura@tiendadezapatos.com</p>
         <p>Teléfono: +1 234 567 8910</p>
-        <i class="fa-brands fa-facebook"></i><p>Facebook</p>
+        <i class="fa-brands fa-facebook"></i> Facebook
     </footer>
 
     <script src="scripts/usuario.js"></script>
-    <script src="scripts/saludo.js"></script>
+    <script src="scripts/acercaDe.js"></script>
+    <script src="scripts/carrito.js"></script>
 </body>
 </html>

@@ -1,3 +1,11 @@
+:root {
+  --primary-color: #007bff;
+  --primary-hover: #0056b3;
+  --text-color: white;
+  --background-light: #f8f9fa;
+  --border-color: #ddd;
+}
+
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -5,159 +13,126 @@ body {
   background-color: #f9f9f9;
 }
 
-/* Estilos para el header */
 header {
-  background-color: #3FA293; /* Fondo verde */
-  color: white; /* Texto blanco */
+  background-color: #3FA293;
+  color: var(--text-color);
   text-align: center;
   padding: 20px 0;
 }
 
-/* Estilo para el título principal */
 .titulo-principal {
-  font-family: Arial, sans-serif; /* Fuente sans-serif */
-  font-size: 2.5rem; /* Tamaño grande */
-  font-weight: bold; /* Negrita */
-  text-transform: uppercase; /* Mayúsculas */
-  margin: 0; /* Sin margen */
-  color: white; /* Texto blanco */
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin: 0;
+  color: var(--text-color);
 }
 
-/* Estilo para el subtítulo */
 .subtitulo {
-  font-family: 'Dancing Script', cursive; /* Fuente Dancing Script */
-  font-size: 1.5rem; /* Tamaño más pequeño */
-  margin: 0; /* Sin margen */
-  color: white; /* Texto blanco */
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.5rem;
+  margin: 0;
+  color: var(--text-color);
+}
+
+.titulo-catalogo, .catalogo h2 {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
 }
 
 .catalogo {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
   padding: 20px;
   text-align: center;
 }
 
-.catalogo h2 {
-  margin-bottom: 30px;
-}
-
-
 .producto {
-  display: inline-block;
-  width: 250px; /* Ancho fijo */
-  height: 350px; /* Alto fijo */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 250px;
+  height: 350px;
   margin: 15px;
   padding: 15px;
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 8px;
-  text-align: center; /* Centra el contenido */
-  overflow: hidden; /* Oculta el contenido que exceda el tamaño */
+  text-align: center;
+  overflow: hidden;
 }
 
 .producto img {
-  border-radius: 8px; /* Bordes redondeados */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra */
-  max-width: 100%; /* Asegura que la imagen no exceda el ancho del contenedor */
-  height: 150px; /* Altura fija para las imágenes */
-  object-fit: cover; /* Ajusta la imagen para que encaje en el contenedor */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  height: 150px;
+  object-fit: cover;
 }
 
 .producto h3 {
-  font-size: 1.2rem; /* Tamaño del título */
-  margin: 10px 0; /* Espaciado superior e inferior */
+  font-size: 1.2rem;
+  margin: 10px 0;
 }
 
 .producto p {
-  font-size: 1rem; /* Tamaño del texto */
-  margin: 10px 0; /* Espaciado superior e inferior */
+  font-size: 1rem;
+  margin: 10px 0;
 }
 
-button {
-  margin-top: auto; /* Empuja el botón hacia la parte inferior del contenedor */
-  background-color: #007bff;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
+button, .btn {
+  background-color: var(--primary-color); 
+  color: var(--text-color); 
+  border: 1px solid var(--primary-color); 
+  border-radius: 5px; 
+  padding: 10px 15px; 
+  font-size: 16px; 
+  text-align: center; 
+  transition: background-color 0.3s ease, color 0.3s ease; 
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #0056b3;
+button:hover, .btn:hover {
+  background-color: var(--primary-hover); 
+  color: var(--text-color); 
+}
+
+.nav-pills .nav-link {
+  background-color: var(--primary-color); 
+  color: var(--text-color); 
+  border-radius: 5px; 
+  padding: 8px 12px; 
+  margin-right: 5px; 
+  font-size: 14px; 
+  text-decoration: none; 
+  transition: background-color 0.3s ease, color 0.3s ease; 
+}
+
+.nav-pills .nav-link:hover {
+  background-color: var(--primary-hover); 
+  color: var(--text-color); 
 }
 
 footer {
-  background-color: #eee;
-  padding: 20px;
-  text-align: center;
+  background-color: #f8f9fa; 
+  color: #333; 
+  text-align: center; 
+  padding: 20px; 
+  border-top: 1px solid var(--border-color); 
 }
 
-/* Estilo uniforme para los botones del header */
-.nav-pills .nav-item .btn, 
-.nav-pills .nav-item .nav-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 40px; /* Altura uniforme */
-    padding: 0 15px; /* Espaciado interno */
-    font-size: 16px; /* Tamaño de fuente */
-    border-radius: 5px; /* Bordes redondeados */
-    text-align: center;
+footer h2 {
+  font-size: 1.5rem; 
+  margin-bottom: 10px; 
 }
 
-/* Asegurar que los botones estén alineados */
-.nav-pills .nav-item {
-    display: flex;
-    align-items: center;
-}
-
-/* Asegurar que el botón "Nuestros productos" tenga el mismo estilo */
-#btn-nuestros-productos {
-  background-color: #007bff; /* Color de fondo */
-  color: white; /* Color del texto */
-  border: 1px solid #007bff; /* Borde azul */
-  border-radius: 5px; /* Bordes redondeados */
-  padding: 10px 15px; /* Espaciado interno */
-  font-size: 16px; /* Tamaño de fuente */
-  text-align: center;
-  transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave */
-  height: 40px; /* Altura uniforme */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-
-/* Hover para el botón */
-#btn-nuestros-productos:hover {
-  background-color: #0056b3; /* Fondo más oscuro */
-  color: white; /* Texto blanco */
-}
-
-/* Estilo uniforme para los enlaces del header */
-.nav-pills .nav-link {
-  color: white; /* Color del texto */
-  background-color: #007bff; /* Fondo azul */
-  border: 1px solid #007bff; /* Borde azul */
-  border-radius: 5px; /* Bordes redondeados */
-  padding: 10px 15px; /* Espaciado interno */
-  text-align: center;
-  font-size: 16px; /* Tamaño de fuente */
-  margin-right: 5px; /* Espaciado entre botones */
-  transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave */
-}
-
-/* Estilo al pasar el cursor */
-.nav-pills .nav-link:hover {
-  background-color: #0056b3; /* Fondo más oscuro */
-  color: white; /* Texto blanco */
-}
-
-/* Estilo para el contenedor colapsable */
-#contentId {
-  margin-top: 10px; /* Espaciado superior */
-  background-color: #f8f9fa; /* Fondo claro */
-  border: 1px solid #ddd; /* Borde */
-  border-radius: 5px; /* Bordes redondeados */
-  padding: 10px; /* Espaciado interno */
+footer p {
+  font-size: 1rem; 
+  margin: 5px 0; 
 }
