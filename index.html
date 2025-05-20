@@ -35,17 +35,13 @@
             <li class="nav-item">
                 <button class="nav-link" onclick="mostrarAcercaDe()">Acerca de</button>
             </li>
-            <li class="nav-item dropdown">
-                <button class="nav-link dropdown-toggle" id="dropdownUsuario" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Usuario
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownUsuario">
-                    <li><button class="dropdown-item" onclick="formularioIngreso()">Ingresar</button></li>
-                    <li><button class="dropdown-item" onclick="formularioRegistro()">Registrarse</button></li>                </ul>
-            </li>
             <li class="nav-item">
-                <button class="nav-link" onclick="mostrarCarrito()">Carrito</button>
+                <a class="nav-link" href="Paginas/carrito.html" id="btn-carrito">Carrito</a>
+            </li>            
+            <li class="nav-item">
+                <a class="nav-link" href="Paginas/login.html" id="btn-usuario">Iniciar Sesión</a>
             </li>
+
         </ul>
     </header>
 
@@ -55,23 +51,27 @@
             <h3>Botas Lamaras Negro</h3>
             <img src="imagenes/Zapato 2.jpg" alt="Botas Lamaras Negro">
             <p>Precio: $170.700</p>
-            <button onclick="agregarAlCarrito('Botas Lamaras Negro', 170700)">Comprar</button>
+            <button onclick="agregarAlCarrito('Botas Lamaras Negro', 170700)">Agregar</button>
         </div>
     
         <div class="producto">
             <h3>Botas Narita Leopardo</h3>
             <img src="imagenes/Zapato 1.jpg" alt="Botas Narita Leopardo">
             <p>Precio: $156.500</p>
-            <button onclick="agregarAlCarrito('Botas Narita Leopardo', 156500)">Comprar</button>
+            <button onclick="agregarAlCarrito('Botas Narita Leopardo', 156500)">Agregar</button>
         </div>
     
         <div class="producto">
             <h3>Borcegos Samy Chocolate</h3>
             <img src="imagenes/Zapato 4.jpg" alt="Borcegos Samy Chocolate">
             <p>Precio: $151.600</p>
-            <button onclick="agregarAlCarrito('Borcegos Samy Chocolate', 151600)">Comprar</button>
+            <button onclick="agregarAlCarrito('Borcegos Samy Chocolate', 151600)">Agregar</button>
         </div>
     </section>
+
+    <div id="notificacion-carrito" style="display:none; position:fixed; top:20px; right:20px; background:#28a745; color:white; padding:10px 20px; border-radius:5px; z-index:1000;">
+        Producto agregado al carrito
+    </div>
 
     <footer>
         <h2>Contacto</h2>
@@ -80,8 +80,7 @@
         <i class="fa-brands fa-facebook"></i> Facebook
     </footer>
 
-    <script src="scripts/usuario.js"></script>
-    <script src="scripts/acercaDe.js"></script>
     <script src="scripts/carrito.js"></script>
+    <script src="scripts/sesion.js"></script>
 </body>
 </html>
