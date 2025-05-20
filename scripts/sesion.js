@@ -18,4 +18,15 @@ document.addEventListener('DOMContentLoaded', function() {
         btnUsuario.onclick = null;
         if(btnCarrito) btnCarrito.classList.add('d-none');
     }
+
+    // Deshabilita los botones "Agregar" si el usuario no está logueado
+    const logueado = localStorage.getItem('usuarioLogueado') === 'true';
+    document.querySelectorAll('.btn-agregar').forEach(btn => {
+        btn.disabled = !logueado;
+        if (!logueado) {
+            btn.title = "Debes iniciar sesión para agregar productos al carrito";
+        } else {
+            btn.title = "";
+        }
+    });
 });
