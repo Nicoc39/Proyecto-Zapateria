@@ -13,6 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script> 
     <!-- Fuente Dancing Script -->
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -38,36 +39,24 @@
             <li class="nav-item">
                 <a class="nav-link" href="Paginas/carrito.html" id="btn-carrito">Carrito</a>
             </li>            
-            <li class="nav-item">
+            <li class="nav-item dropdown" id="usuario-menu" style="display:none;">
+                <button class="nav-link dropdown-toggle" id="dropdownUsuario" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Mi Usuario
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownUsuario">
+                    <li><button class="dropdown-item" id="btn-historial">Historial de compras</button></li>
+                    <li><button class="dropdown-item" id="btn-favoritos">Favoritos</button></li>
+                    <li><button class="dropdown-item text-danger" id="btn-cerrar-sesion">Cerrar sesión</button></li>
+                </ul>
+            </li>
+            <li class="nav-item" id="login-menu">
                 <a class="nav-link" href="Paginas/login.html" id="btn-usuario">Iniciar Sesión</a>
             </li>
-
         </ul>
     </header>
 
     <h2 class="titulo-catalogo">Catálogo</h2>
-    <section class="catalogo">        
-        <div class="producto">
-            <h3>Botas Lamaras Negro</h3>
-            <img src="imagenes/Zapato 2.jpg" alt="Botas Lamaras Negro">
-            <p>Precio: $170.700</p>
-            <button class="btn-agregar" onclick="agregarAlCarrito('Botas Lamaras Negro', 170700)">Agregar</button>
-        </div>
-    
-        <div class="producto">
-            <h3>Botas Narita Leopardo</h3>
-            <img src="imagenes/Zapato 1.jpg" alt="Botas Narita Leopardo">
-            <p>Precio: $156.500</p>
-            <button class="btn-agregar" onclick="agregarAlCarrito('Botas Narita Leopardo', 156500)">Agregar</button>
-        </div>
-    
-        <div class="producto">
-            <h3>Borcegos Samy Chocolate</h3>
-            <img src="imagenes/Zapato 4.jpg" alt="Borcegos Samy Chocolate">
-            <p>Precio: $151.600</p>
-            <button class="btn-agregar" onclick="agregarAlCarrito('Borcegos Samy Chocolate', 151600)">Agregar</button>
-        </div>
-    </section>
+    <section class="catalogo"></section>
 
     <div id="notificacion-carrito" style="display:none; position:fixed; top:20px; right:20px; background:#28a745; color:white; padding:10px 20px; border-radius:5px; z-index:1000;">
         Producto agregado al carrito
@@ -82,5 +71,6 @@
 
     <script src="scripts/carrito.js"></script>
     <script src="scripts/sesion.js"></script>
+    <script src="scripts/catalogo.js"></script>
 </body>
 </html>

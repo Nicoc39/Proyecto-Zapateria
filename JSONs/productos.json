@@ -1,0 +1,17 @@
+[
+  {
+    "nombre": "Botas Lamaras Negro",
+    "precio": 170700,
+    "imagen": "/imagenes/Zapato 2.jpg"
+  },
+  {
+    "nombre": "Botas Narita Leopardo",
+    "precio": 156500,
+    "imagen": "/imagenes/Zapato 1.jpg"
+  },
+  {
+    "nombre": "Borcegos Samy Chocolate",
+    "precio": 151600,
+    "imagen": "/imagenes/Zapato 4.jpg"
+  }
+]
