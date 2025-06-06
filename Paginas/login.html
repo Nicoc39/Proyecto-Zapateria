@@ -30,9 +30,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="#">Acerca de</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="carrito.html" id="btn-carrito">Carrito</a>
-            </li>            
+            <li class="nav-item" id="btn-carrito">
+                <a class="nav-link" href="carrito.html">Carrito</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="login.html" id="btn-usuario">Usuario</a>
             </li>
@@ -79,5 +79,15 @@
     </footer>
 
     <script src="../scripts/login.js"></script>
+    <script src="../scripts/sesion.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnCarrito = document.getElementById('btn-carrito');
+            const usuario = localStorage.getItem('usuario');
+            if (btnCarrito) {
+                btnCarrito.style.display = usuario ? '' : 'none';
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,16 +1,24 @@
 // Este script gestiona el estado de sesión del usuario y la visibilidad del menú de usuario y login.
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Mostrar/ocultar menú de usuario según sesión
+    // Obtener usuario solo una vez
     const usuario = localStorage.getItem('usuario');
+
+    // Mostrar/ocultar menú de usuario según sesión
     const usuarioMenu = document.getElementById('usuario-menu');
     const loginMenu = document.getElementById('login-menu');
     if (usuario) {
-        usuarioMenu.style.display = 'block';
-        loginMenu.style.display = 'none';
+        if (usuarioMenu) usuarioMenu.style.display = 'block';
+        if (loginMenu) loginMenu.style.display = 'none';
     } else {
-        usuarioMenu.style.display = 'none';
-        loginMenu.style.display = 'block';
+        if (usuarioMenu) usuarioMenu.style.display = 'none';
+        if (loginMenu) loginMenu.style.display = 'block';
+    }
+
+    // Mostrar/ocultar botón Carrito según sesión
+    const btnCarrito = document.getElementById('btn-carrito');
+    if (btnCarrito) {
+        btnCarrito.style.display = usuario ? '' : 'none';
     }
 
     // Botón cerrar sesión
