@@ -80,14 +80,5 @@
 
     <script src="../scripts/login.js"></script>
     <script src="../scripts/sesion.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const btnCarrito = document.getElementById('btn-carrito');
-            const usuario = localStorage.getItem('usuario');
-            if (btnCarrito) {
-                btnCarrito.style.display = usuario ? '' : 'none';
-            }
-        });
-    </script>
 </body>
 </html>
