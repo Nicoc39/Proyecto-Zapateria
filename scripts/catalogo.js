@@ -4,38 +4,46 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(productos => {
             const catalogo = document.querySelector('.catalogo');
             catalogo.innerHTML = '';
-            productos.forEach(prod => {
-                const div = document.createElement('div');
-                div.className = "producto";
-                div.innerHTML = `
-                    <img src="${prod.imagen}" alt="${prod.nombre}" class="img-producto">
-                    <h3>${prod.nombre}</h3>
-                    <p>Precio: $${prod.precio.toLocaleString('es-AR')}</p>
+            let html = ''; // Variable para almacenar el HTML de los productos
+            productos.forEach(producto => {
+                html += `
+                    <div class="producto">
+                        <img src="${producto.imagen}" alt="${producto.nombre}" class="img-producto">
+                        <h3>${producto.nombre}</h3>
+                        <p>Precio: $${producto.precio.toLocaleString('es-AR')}</p>
                         <div class="acciones-producto" style="display:flex; gap:8px;">
-                        <button class="btn-agregar" title="Agregar al carrito">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                        </button>
-                        <button class="btn-favorito" title="Agregar a Favoritos">
-                            <i class="fa-solid fa-heart"></i>
-                        </button>
+                            <button class="btn-agregar" title="Agregar al carrito">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                            </button>
+                            <button class="btn-favorito" title="Agregar a Favoritos">
+                                <i class="fa-solid fa-heart"></i>
+                            </button>
+                        </div>
                     </div>
                 `;
-                catalogo.appendChild(div);
+            });
+            catalogo.innerHTML = html; // Insertar todo el HTML de una vez
 
+            // Agregar eventos después de que se haya actualizado el HTML
+            productos.forEach((prod, index) => {
                 // Evento para agregar al carrito con selección de talle
-                div.querySelector('.btn-agregar').addEventListener('click', function() {
+                document.querySelectorAll('.btn-agregar')[index].addEventListener('click', function() {
                     agregarAlCarrito(prod.nombre, prod.precio, prod.imagen);
                 });
-
-                // Evento para agregar a favoritos
-                div.querySelector('.btn-favorito').addEventListener('click', function() {
-                    agregarAFavoritos(prod);
-                });
             });
+
             if (typeof actualizarBotonesAgregar === "function") {
                 actualizarBotonesAgregar();
             }
         });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof agregarAlCarrito !== "function") {
+        console.error("agregarAlCarrito NO está definida");
+    } else {
+        console.log("agregarAlCarrito SÍ está definida");
+    }
 });
 
 // Función para agregar a favoritos

@@ -1,9 +1,9 @@
 //// Este script permite agregar productos al carrito, guardarlos en localStorage y mostrarlos en pantalla.
 // También muestra el total y permite vaciar todo el carrito con un botón.
 
+console.log('carrito.js correcto y actualizado');
+window.agregarAlCarrito = agregarAlCarrito;
 
-
-// Agregar producto al carrito con selección de talle
 function agregarAlCarrito(nombre, precio, imagen) {
     Swal.fire({
         title: 'Selecciona el talle',
@@ -26,7 +26,6 @@ function agregarAlCarrito(nombre, precio, imagen) {
     });
 }
 
-// Función para mostrar el carrito y el total
 function mostrarCarrito() {
     const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     const items = document.getElementById('carrito-items');
@@ -40,22 +39,31 @@ function mostrarCarrito() {
         return;
     }
 
-    carrito.forEach((prod, index) => {
-        const div = document.createElement('div');
-        div.className = "mb-2";
-        div.innerHTML = `
-            <img src="${prod.imagen}" alt="${prod.nombre}" style="width:60px; vertical-align:middle; margin-right:10px;">
-            ${prod.nombre} - Talle ${prod.talle || '-'} - $${prod.precio.toLocaleString('es-AR')}
-            <button class="btn-quitar" data-index="${index}" style="margin-left:10px;">Quitar</button>
+    let html = ''; // Nueva variable para construir el HTML
+    carrito.forEach((prod, idx) => {
+        html += `
+            <div class="carrito-item" style="display:flex;align-items:center;margin-bottom:10px;">
+                <img src="${getRutaImagenFavorito(prod.imagen)}" alt="${prod.nombre}" style="width:50px;height:50px;object-fit:cover;margin-right:10px;border-radius:5px;">
+                <div style="display:flex;flex-direction:column;">
+                    <div style="display:flex;align-items:center;">
+                        <span style="font-weight:bold;">${prod.nombre}</span>
+                        <button class="btn-eliminar-carrito" data-index="${idx}" style="background:none;border:none;color:#e74c3c;font-size:1.2em;cursor:pointer;margin-left:8px;">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                    <span style="font-size:0.95em;color:#555;">Talle: ${prod.talle || '-'}</span>
+                    <span style="font-size:0.95em;color:#555;">Precio: $${prod.precio.toLocaleString('es-AR')}</span>
+                </div>
+            </div>
         `;
-        items.appendChild(div);
         suma += prod.precio;
     });
 
+    items.innerHTML = html; // Asigna el HTML construido
     total.textContent = `Total: $${suma.toLocaleString('es-AR')}`;
 
-    // Asigna el evento a los botones "Quitar"
-    document.querySelectorAll('.btn-quitar').forEach(btn => {
+    // Asigna el evento a los botones "Eliminar"
+    document.querySelectorAll('.btn-eliminar-carrito').forEach(btn => {
         btn.addEventListener('click', function() {
             quitarDelCarrito(this.getAttribute('data-index'));
         });
@@ -165,154 +173,201 @@ document.getElementById('finalizar-compra').addEventListener('click', function()
         }
     }).then((result) => {
         if (result.isConfirmed) {
+            const provincia = result.value.provincia;
+            const ciudad = result.value.ciudad;
+
+            const costosEnvio = {
+                "Buenos Aires": { costo: 2500, dias: 2 },
+                "CABA": { costo: 2000, dias: 1 },
+                "Córdoba": { costo: 3000, dias: 3 },
+                "Santa Fe": { costo: 3200, dias: 3 },
+                "default": { costo: 4000, dias: 5 }
+            };
+
+            const envio = costosEnvio[provincia] || costosEnvio["default"];
+
             Swal.fire({
-                title: 'Método de pago',
+                title: 'Costo y tiempo de envío',
                 html: `
-                    <select id="swal-metodo" class="swal2-input">
-                        <option value="" disabled selected>Selecciona método</option>
-                        <option value="Debito">Débito</option>
-                        <option value="Credito">Crédito</option>
-                    </select>
-                    <label for="swal-nombre" style="display:block;text-align:left;margin:8px 0 2px 2px;">Nombre y Apellido</label>
-                    <input id="swal-nombre" class="swal2-input" type="text" placeholder="Tal como figura en la Tarjeta">
-                    <label for="swal-tarjeta" style="display:block;text-align:left;margin:8px 0 2px 2px;">Número de tarjeta</label>
-                    <input id="swal-tarjeta" class="swal2-input" type="text" maxlength="19" placeholder="0000 0000 0000 0000">
-                    <label for="swal-vto" style="display:block;text-align:left;margin:8px 0 2px 2px;">Fecha de Vencimiento <span style="font-size:0.9em;"></span></label>
-                    <input id="swal-vto" class="swal2-input" type="text" maxlength="5" placeholder="MM/AA">
-                    <label for="swal-cvv" style="display:block;text-align:left;margin:8px 0 2px 2px;">Código de seguridad</label>
-                    <input id="swal-cvv" class="swal2-input" type="text" maxlength="3" placeholder="***">
-                    <div id="cuotas-container"></div>
+                    <p><b>Provincia:</b> ${provincia}</p>
+                    <p><b>Ciudad:</b> ${ciudad}</p>
+                    <p><b>Costo de envío:</b> $${envio.costo.toLocaleString('es-AR')}</p>
+                    <p><b>Tiempo estimado de entrega:</b> ${envio.dias} días hábiles</p>
                 `,
-                focusConfirm: false,
-                showCancelButton: true,
-                confirmButtonText: 'Finalizar compra',
-                cancelButtonText: 'Cancelar',
-                didOpen: () => {
-                    // Formateo automático para número de tarjeta
-                    const tarjeta = document.getElementById('swal-tarjeta');
-                    tarjeta.addEventListener('input', function(e) {
-                        let value = tarjeta.value.replace(/\D/g, '').substring(0,16);
-                        value = value.replace(/(.{4})/g, '$1 ').trim();
-                        tarjeta.value = value;
-                    });
-                    // Formateo automático para fecha de vto
-                    const vto = document.getElementById('swal-vto');
-                    vto.addEventListener('input', function(e) {
-                        let value = vto.value.replace(/\D/g, '').substring(0,4);
-                        // Formato MM/AA
-                        if (value.length > 2) value = value.substring(0,2) + '/' + value.substring(2,4);
-                        vto.value = value;
-                    });
-                    vto.addEventListener('blur', function() {
-                        // Validación de mes y año al salir del campo
-                        const parts = vto.value.split('/');
-                        if (parts.length === 2) {
-                            let mes = parseInt(parts[0], 10);
-                            let anio = parseInt(parts[1], 10);
-                            if (isNaN(mes) || mes < 1 || mes > 12) {
-                                vto.value = '';
-                                Swal.showValidationMessage('El mes debe estar entre 01 y 12');
+                confirmButtonText: 'Continuar con el pago'
+            }).then(() => {
+                Swal.fire({
+                    title: 'Método de pago',
+                    html: `
+                        <select id="swal-metodo" class="swal2-input">
+                            <option value="" disabled selected>Selecciona método</option>
+                            <option value="Debito">Débito</option>
+                            <option value="Credito">Crédito</option>
+                        </select>
+                        <label for="swal-nombre" style="display:block;text-align:left;margin:8px 0 2px 2px;">Nombre y Apellido</label>
+                        <input id="swal-nombre" class="swal2-input" type="text" placeholder="Tal como figura en la Tarjeta">
+                        <label for="swal-tarjeta" style="display:block;text-align:left;margin:8px 0 2px 2px;">Número de tarjeta</label>
+                        <input id="swal-tarjeta" class="swal2-input" type="text" maxlength="19" placeholder="0000 0000 0000 0000">
+                        <label for="swal-vto" style="display:block;text-align:left;margin:8px 0 2px 2px;">Fecha de Vencimiento <span style="font-size:0.9em;"></span></label>
+                        <input id="swal-vto" class="swal2-input" type="text" maxlength="5" placeholder="MM/AA">
+                        <label for="swal-cvv" style="display:block;text-align:left;margin:8px 0 2px 2px;">Código de seguridad</label>
+                        <input id="swal-cvv" class="swal2-input" type="text" maxlength="3" placeholder="***">
+                        <div id="cuotas-container"></div>
+                    `,
+                    focusConfirm: false,
+                    showCancelButton: true,
+                    confirmButtonText: 'Finalizar compra',
+                    cancelButtonText: 'Cancelar',
+                    didOpen: () => {
+                        // Formateo automático para número de tarjeta
+                        const tarjeta = document.getElementById('swal-tarjeta');
+                        tarjeta.addEventListener('input', function(e) {
+                            let value = tarjeta.value.replace(/\D/g, '').substring(0,16);
+                            value = value.replace(/(.{4})/g, '$1 ').trim();
+                            tarjeta.value = value;
+                        });
+                        // Formateo automático para fecha de vto
+                        const vto = document.getElementById('swal-vto');
+                        vto.addEventListener('input', function(e) {
+                            let value = vto.value.replace(/\D/g, '').substring(0,4);
+                            // Formato MM/AA
+                            if (value.length > 2) value = value.substring(0,2) + '/' + value.substring(2,4);
+                            vto.value = value;
+                        });
+                        vto.addEventListener('blur', function() {
+                            // Validación de mes y año al salir del campo
+                            const parts = vto.value.split('/');
+                            if (parts.length === 2) {
+                                let mes = parseInt(parts[0], 10);
+                                let anio = parseInt(parts[1], 10);
+                                if (isNaN(mes) || mes < 1 || mes > 12) {
+                                    vto.value = '';
+                                    Swal.showValidationMessage('El mes debe estar entre 01 y 12');
+                                }
+                                if (isNaN(anio) || anio < 25) {
+                                    vto.value = '';
+                                    Swal.showValidationMessage('El año debe ser igual o mayor a 25');
+                                }
                             }
-                            if (isNaN(anio) || anio < 25) {
-                                vto.value = '';
-                                Swal.showValidationMessage('El año debe ser igual o mayor a 25');
+                        });
+                        // Solo números para CVV
+                        const cvv = document.getElementById('swal-cvv');
+                        cvv.addEventListener('input', function(e) {
+                            cvv.value = cvv.value.replace(/\D/g, '').substring(0,3);
+                        });
+
+                        // Nombre y Apellido en mayúsculas siempre
+                        const nombre = document.getElementById('swal-nombre');
+                        nombre.addEventListener('input', function(e) {
+                            nombre.value = nombre.value.toUpperCase();
+                        });
+
+                        // Mostrar cuotas solo si se selecciona Crédito
+                        const metodo = document.getElementById('swal-metodo');
+                        const cuotasContainer = document.getElementById('cuotas-container');
+                        metodo.addEventListener('change', function() {
+                            if (metodo.value === 'Credito') {
+                                // Calcula cuotas
+                                const total = suma;
+                                const cuotas1 = total;
+                                const cuotas3 = Math.round((total * 1.05) / 3);
+                                const total3 = Math.round(total * 1.05);
+                                const cuotas6 = Math.round((total * 1.10) / 6);
+                                const total6 = Math.round(total * 1.10);
+                                const cuotas12 = Math.round((total * 1.15) / 12);
+                                const total12 = Math.round(total * 1.15);
+                                cuotasContainer.innerHTML = `
+                                    <label for="swal-cuotas" style="display:block;text-align:left;margin:8px 0 2px 2px;">CUOTAS</label>
+                                    <select id="swal-cuotas" class="swal2-input">
+                                        <option value="1">1 cuota de $${cuotas1.toLocaleString('es-AR')} (total $${cuotas1.toLocaleString('es-AR')})</option>
+                                        <option value="3">3 cuotas de $${cuotas3.toLocaleString('es-AR')} (total $${total3.toLocaleString('es-AR')})</option>
+                                        <option value="6">6 cuotas de $${cuotas6.toLocaleString('es-AR')} (total $${total6.toLocaleString('es-AR')})</option>
+                                        <option value="12">12 cuotas de $${cuotas12.toLocaleString('es-AR')} (total $${total12.toLocaleString('es-AR')})</option>
+                                    </select>
+                                `;
+                            } else {
+                                cuotasContainer.innerHTML = '';
                             }
-                        }
-                    });
-                    // Solo números para CVV
-                    const cvv = document.getElementById('swal-cvv');
-                    cvv.addEventListener('input', function(e) {
-                        cvv.value = cvv.value.replace(/\D/g, '').substring(0,3);
-                    });
-
-                    // Nombre y Apellido en mayúsculas siempre
-                    const nombre = document.getElementById('swal-nombre');
-                    nombre.addEventListener('input', function(e) {
-                        nombre.value = nombre.value.toUpperCase();
-                    });
-
-                    // Mostrar cuotas solo si se selecciona Crédito
-                    const metodo = document.getElementById('swal-metodo');
-                    const cuotasContainer = document.getElementById('cuotas-container');
-                    metodo.addEventListener('change', function() {
-                        if (metodo.value === 'Credito') {
-                            // Calcula cuotas
-                            const total = suma;
-                            const cuotas1 = total;
-                            const cuotas3 = Math.round((total * 1.05) / 3);
-                            const total3 = Math.round(total * 1.05);
-                            const cuotas6 = Math.round((total * 1.10) / 6);
-                            const total6 = Math.round(total * 1.10);
-                            const cuotas12 = Math.round((total * 1.15) / 12);
-                            const total12 = Math.round(total * 1.15);
-                            cuotasContainer.innerHTML = `
-                                <label for="swal-cuotas" style="display:block;text-align:left;margin:8px 0 2px 2px;">CUOTAS</label>
-                                <select id="swal-cuotas" class="swal2-input">
-                                    <option value="1">1 cuota de $${cuotas1.toLocaleString('es-AR')} (total $${cuotas1.toLocaleString('es-AR')})</option>
-                                    <option value="3">3 cuotas de $${cuotas3.toLocaleString('es-AR')} (total $${total3.toLocaleString('es-AR')})</option>
-                                    <option value="6">6 cuotas de $${cuotas6.toLocaleString('es-AR')} (total $${total6.toLocaleString('es-AR')})</option>
-                                    <option value="12">12 cuotas de $${cuotas12.toLocaleString('es-AR')} (total $${total12.toLocaleString('es-AR')})</option>
-                                </select>
-                            `;
-                        } else {
-                            cuotasContainer.innerHTML = '';
-                        }
-                    });
-                },
-                preConfirm: () => {
-                    const metodo = document.getElementById('swal-metodo').value;
-                    const nombre = document.getElementById('swal-nombre').value.trim();
-                    const tarjeta = document.getElementById('swal-tarjeta').value.replace(/\s/g, '');
-                    const vto = document.getElementById('swal-vto').value;
-                    const cvv = document.getElementById('swal-cvv').value;
-                    let cuotas = null;
-                    if (!metodo || !nombre || !tarjeta || !vto || !cvv) {
-                        Swal.showValidationMessage('Completa todos los campos');
-                        return false;
-                    }
-                    if (tarjeta.length !== 16) {
-                        Swal.showValidationMessage('El número de tarjeta debe tener 16 dígitos');
-                        return false;
-                    }
-                    if (!/^\d{2}\/\d{2}$/.test(vto)) {
-                        Swal.showValidationMessage('La fecha de vto debe tener el formato mm/aa');
-                        return false;
-                    }
-                    const [mes, anio] = vto.split('/').map(Number);
-                    if (mes < 1 || mes > 12) {
-                        Swal.showValidationMessage('El mes debe estar entre 01 y 12');
-                        return false;
-                    }
-                    if (anio < 25) {
-                        Swal.showValidationMessage('El año debe ser igual o mayor a 25');
-                        return false;
-                    }
-                    if (metodo === 'Credito') {
-                        cuotas = document.getElementById('swal-cuotas')?.value;
-                        if (!cuotas) {
-                            Swal.showValidationMessage('Selecciona la cantidad de cuotas');
+                        });
+                    },
+                    preConfirm: () => {
+                        const metodo = document.getElementById('swal-metodo').value;
+                        const nombre = document.getElementById('swal-nombre').value.trim();
+                        const tarjeta = document.getElementById('swal-tarjeta').value.replace(/\s/g, '');
+                        const vto = document.getElementById('swal-vto').value;
+                        const cvv = document.getElementById('swal-cvv').value;
+                        let cuotas = null;
+                        if (!metodo || !nombre || !tarjeta || !vto || !cvv) {
+                            Swal.showValidationMessage('Completa todos los campos');
                             return false;
                         }
+                        if (tarjeta.length !== 16) {
+                            Swal.showValidationMessage('El número de tarjeta debe tener 16 dígitos');
+                            return false;
+                        }
+                        if (!/^\d{2}\/\d{2}$/.test(vto)) {
+                            Swal.showValidationMessage('La fecha de vto debe tener el formato mm/aa');
+                            return false;
+                        }
+                        const [mes, anio] = vto.split('/').map(Number);
+                        if (mes < 1 || mes > 12) {
+                            Swal.showValidationMessage('El mes debe estar entre 01 y 12');
+                            return false;
+                        }
+                        if (anio < 25) {
+                            Swal.showValidationMessage('El año debe ser igual o mayor a 25');
+                            return false;
+                        }
+                        if (metodo === 'Credito') {
+                            cuotas = document.getElementById('swal-cuotas')?.value;
+                            if (!cuotas) {
+                                Swal.showValidationMessage('Selecciona la cantidad de cuotas');
+                                return false;
+                            }
+                        }
+                        return { metodo, nombre, tarjeta, vto, cvv, cuotas };
                     }
-                    return { metodo, nombre, tarjeta, vto, cvv, cuotas };
-                }
-            }).then((resultPago) => {
-                if (resultPago.isConfirmed) {
-                    // Guardar historial
-                    let historial = JSON.parse(localStorage.getItem('historialCompras')) || [];
-                    const usuario = JSON.parse(localStorage.getItem('usuario')) || { email: 'Invitado' };
-                    const carritoActual = JSON.parse(localStorage.getItem('carrito')) || [];
-                    historial.push({
-                        usuario: usuario.email,
-                        fecha: new Date().toLocaleString(),
-                        productos: carritoActual
-                    });
-                    localStorage.setItem('historialCompras', JSON.stringify(historial));
+                }).then((resultPago) => {
+                    if (resultPago.isConfirmed) {
+                        // Guardar historial
+                        let historial = JSON.parse(localStorage.getItem('historialCompras')) || [];
+                        const usuario = JSON.parse(localStorage.getItem('usuario')) || { email: 'Invitado' };
+                        const carritoActual = JSON.parse(localStorage.getItem('carrito')) || [];
+                        historial.push({
+                            usuario: usuario.email,
+                            fecha: new Date().toLocaleString(),
+                            productos: carritoActual
+                        });
+                        localStorage.setItem('historialCompras', JSON.stringify(historial));
 
-                    localStorage.removeItem('carrito');
-                    mostrarCarrito();
-                    Swal.fire('¡Compra realizada!', 'Gracias por tu compra.', 'success');
-                }
+                        localStorage.removeItem('carrito');
+                        mostrarCarrito();
+                        Swal.fire({
+                            title: '¡Compra realizada!',
+                            html: `
+                                <b>Número de pedido:</b> #${Math.floor(Math.random()*900000+100000)}<br>
+                                <b>Fecha:</b> ${new Date().toLocaleDateString()}<br>
+                                <b>Estado:</b> En preparación<br>
+                                <hr>
+                                <b>Resumen:</b>
+                                <ul style="text-align:left">
+                                    ${carritoActual.map(item => `<li>${item.nombre} x${item.cantidad || 1} - $${item.precio.toLocaleString('es-AR')}</li>`).join('')}
+                                </ul>
+                                <b>Total:</b> $${carritoActual.reduce((acc, prod) => acc + prod.precio * (prod.cantidad || 1), 0).toLocaleString('es-AR')}<br>
+                                <hr>
+                                <b>Seguimiento:</b>
+                                <ol style="text-align:left">
+                                    <li>Pedido recibido</li>
+                                    <li><b>En preparación</b></li>
+                                    <li>Enviado</li>
+                                    <li>Entregado</li>
+                                </ol>
+                            `,
+                            icon: 'success',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    }
+                });
             });
         }
     });
