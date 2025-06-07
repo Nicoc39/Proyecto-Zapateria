@@ -5,6 +5,11 @@ console.log('carrito.js correcto y actualizado');
 window.agregarAlCarrito = agregarAlCarrito;
 
 function agregarAlCarrito(nombre, precio, imagen) {
+    // Verificar si estamos en un entorno seguro (HTTPS)
+    if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+        console.warn('Se recomienda usar HTTPS para un funcionamiento óptimo del carrito');
+    }
+
     Swal.fire({
         title: 'Selecciona el talle',
         input: 'select',
@@ -17,57 +22,81 @@ function agregarAlCarrito(nombre, precio, imagen) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed && result.value) {
-            let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-            carrito.push({ nombre, precio, imagen, talle: result.value });
-            localStorage.setItem('carrito', JSON.stringify(carrito));
-            mostrarNotificacion('Producto agregado al carrito');
-            mostrarCarrito();
+            try {
+                let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+                carrito.push({ nombre, precio, imagen, talle: result.value });
+                localStorage.setItem('carrito', JSON.stringify(carrito));
+                mostrarNotificacion('Producto agregado al carrito');
+                mostrarCarrito();
+            } catch (error) {
+                console.error('Error al guardar en el carrito:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No se pudo agregar el producto al carrito. Por favor, intenta nuevamente.'
+                });
+            }
         }
     });
 }
 
 function mostrarCarrito() {
-    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-    const items = document.getElementById('carrito-items');
-    const total = document.getElementById('carrito-total');
-    items.innerHTML = '';
-    let suma = 0;
+    try {
+        const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        const items = document.getElementById('carrito-items');
+        const total = document.getElementById('carrito-total');
+        
+        if (!items || !total) {
+            console.error('No se encontraron los elementos del carrito en el DOM');
+            return;
+        }
 
-    if (carrito.length === 0) {
-        items.innerHTML = '<p>No hay productos en el carrito.</p>';
-        total.textContent = '';
-        return;
-    }
+        items.innerHTML = '';
+        let suma = 0;
 
-    let html = ''; // Nueva variable para construir el HTML
-    carrito.forEach((prod, idx) => {
-        html += `
-            <div class="carrito-item" style="display:flex;align-items:center;margin-bottom:10px;">
-                <img src="${getRutaImagenFavorito(prod.imagen)}" alt="${prod.nombre}" style="width:50px;height:50px;object-fit:cover;margin-right:10px;border-radius:5px;">
-                <div style="display:flex;flex-direction:column;">
-                    <div style="display:flex;align-items:center;">
-                        <span style="font-weight:bold;">${prod.nombre}</span>
-                        <button class="btn-eliminar-carrito" data-index="${idx}" style="background:none;border:none;color:#e74c3c;font-size:1.2em;cursor:pointer;margin-left:8px;">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
+        if (carrito.length === 0) {
+            items.innerHTML = '<p>No hay productos en el carrito.</p>';
+            total.textContent = '';
+            return;
+        }
+
+        let html = ''; // Nueva variable para construir el HTML
+        carrito.forEach((prod, idx) => {
+            html += `
+                <div class="carrito-item" style="display:flex;align-items:center;margin-bottom:10px;">
+                    <img src="${getRutaImagenFavorito(prod.imagen)}" alt="${prod.nombre}" style="width:50px;height:50px;object-fit:cover;margin-right:10px;border-radius:5px;">
+                    <div style="display:flex;flex-direction:column;">
+                        <div style="display:flex;align-items:center;">
+                            <span style="font-weight:bold;">${prod.nombre}</span>
+                            <button class="btn-eliminar-carrito" data-index="${idx}" style="background:none;border:none;color:#e74c3c;font-size:1.2em;cursor:pointer;margin-left:8px;">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                        <span style="font-size:0.95em;color:#555;">Talle: ${prod.talle || '-'}</span>
+                        <span style="font-size:0.95em;color:#555;">Precio: $${prod.precio.toLocaleString('es-AR')}</span>
                     </div>
-                    <span style="font-size:0.95em;color:#555;">Talle: ${prod.talle || '-'}</span>
-                    <span style="font-size:0.95em;color:#555;">Precio: $${prod.precio.toLocaleString('es-AR')}</span>
                 </div>
-            </div>
-        `;
-        suma += prod.precio;
-    });
-
-    items.innerHTML = html; // Asigna el HTML construido
-    total.textContent = `Total: $${suma.toLocaleString('es-AR')}`;
-
-    // Asigna el evento a los botones "Eliminar"
-    document.querySelectorAll('.btn-eliminar-carrito').forEach(btn => {
-        btn.addEventListener('click', function() {
-            quitarDelCarrito(this.getAttribute('data-index'));
+            `;
+            suma += prod.precio;
         });
-    });
+
+        items.innerHTML = html; // Asigna el HTML construido
+        total.textContent = `Total: $${suma.toLocaleString('es-AR')}`;
+
+        // Asigna el evento a los botones "Eliminar"
+        document.querySelectorAll('.btn-eliminar-carrito').forEach(btn => {
+            btn.addEventListener('click', function() {
+                quitarDelCarrito(this.getAttribute('data-index'));
+            });
+        });
+    } catch (error) {
+        console.error('Error al mostrar el carrito:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo mostrar el carrito. Por favor, intenta nuevamente más tarde.'
+        });
+    }
 }
 
 // Nueva función para quitar un producto del carrito
