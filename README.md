@@ -1,8 +1,6 @@
 # Dulce Locura - Tienda de Calzados y Accesorios
 
 ## Descripción
-Dulce Locura es una tienda virtual de calzados y accesorios que permite a los usuarios explorar productos, agregarlos al carrito, gestionar favoritos y realizar compras de manera segura.
-
 Como proyecto final debia crear un simulador interactivo en JavaScript. Mi simulador es un Ecommerce, una tienda virtual de zapatos y calzados que implementa lo aprendido en el curso de JavaScript de CODERHOUSE.
 
 ## Características Principales
