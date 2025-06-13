@@ -35,13 +35,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Función auxiliar para obtener la clave de localStorage basada en el usuario
+    function getStorageKey(baseKey) {
+        const usuario = JSON.parse(localStorage.getItem('usuario')) || { email: 'invitado' };
+        return `${baseKey}_${usuario.email.replace(/[^a-zA-Z0-9]/g, '')}`;
+    }
+
     // =====================
     // HISTORIAL DE COMPRAS
     // =====================
     const btnHistorial = document.getElementById('btn-historial');
     if (btnHistorial) {
         btnHistorial.addEventListener('click', function() {
-            const historial = JSON.parse(localStorage.getItem('historialCompras')) || [];
+            const historial = JSON.parse(localStorage.getItem(getStorageKey('historialCompras'))) || [];
             if (historial.length === 0) {
                 Swal.fire('Mis compras', 'No tienes compras registradas.', 'info');
                 return;
@@ -100,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnFavoritos = document.getElementById('btn-favoritos');
     if (btnFavoritos) {
         btnFavoritos.addEventListener('click', function() {
-            let favoritos = JSON.parse(localStorage.getItem('favoritos')) || [];
+            const favoritos = JSON.parse(localStorage.getItem(getStorageKey('favoritos'))) || [];
             if (favoritos.length === 0) {
                 Swal.fire('Favoritos', 'No tienes productos en favoritos.', 'info');
                 return;
@@ -127,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             e.stopPropagation();
                             const idx = parseInt(this.getAttribute('data-index'));
                             favoritos.splice(idx, 1);
-                            localStorage.setItem('favoritos', JSON.stringify(favoritos));
+                            localStorage.setItem(getStorageKey('favoritos'), JSON.stringify(favoritos));
                             Swal.close();
                             // Vuelve a abrir la alerta para actualizar la lista
                             btnFavoritos.click();

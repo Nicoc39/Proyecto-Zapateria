@@ -5,15 +5,19 @@
 console.log('carrito.js correcto y actualizado');
 window.agregarAlCarrito = agregarAlCarrito;
 
+// Función auxiliar para obtener la clave de localStorage basada en el usuario
+function getStorageKey(baseKey) {
+    const usuario = JSON.parse(localStorage.getItem('usuario')) || { email: 'invitado' };
+    return `${baseKey}_${usuario.email.replace(/[^a-zA-Z0-9]/g, '')}`;
+}
+
 // Función principal para agregar productos al carrito
-// Si es calzado, pide talle; si es carteras, agrega directo
 function agregarAlCarrito(nombre, precio, imagen, categoria) {
     if (categoria === 'carteras') {
-        // Agregar carteras directamente (sin talle)
         try {
-            let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            let carrito = JSON.parse(localStorage.getItem(getStorageKey('carrito'))) || [];
             carrito.push({ nombre, precio, imagen, categoria });
-            localStorage.setItem('carrito', JSON.stringify(carrito));
+            localStorage.setItem(getStorageKey('carrito'), JSON.stringify(carrito));
             mostrarNotificacion('Producto agregado al carrito');
             mostrarCarrito();
         } catch (error) {
@@ -43,9 +47,9 @@ function agregarAlCarrito(nombre, precio, imagen, categoria) {
     }).then((result) => {
         if (result.isConfirmed && result.value) {
             try {
-                let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+                let carrito = JSON.parse(localStorage.getItem(getStorageKey('carrito'))) || [];
                 carrito.push({ nombre, precio, imagen, talle: result.value, categoria });
-                localStorage.setItem('carrito', JSON.stringify(carrito));
+                localStorage.setItem(getStorageKey('carrito'), JSON.stringify(carrito));
                 mostrarNotificacion('Producto agregado al carrito');
                 mostrarCarrito();
             } catch (error) {
@@ -63,7 +67,7 @@ function agregarAlCarrito(nombre, precio, imagen, categoria) {
 // Renderiza el carrito en pantalla
 function mostrarCarrito() {
     try {
-        const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        const carrito = JSON.parse(localStorage.getItem(getStorageKey('carrito'))) || [];
         const items = document.getElementById('carrito-items');
         const total = document.getElementById('carrito-total');
         
@@ -139,9 +143,9 @@ function mostrarCarrito() {
 
 // Elimina un producto del carrito por índice
 function quitarDelCarrito(indice) {
-    let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+    let carrito = JSON.parse(localStorage.getItem(getStorageKey('carrito'))) || [];
     carrito.splice(indice, 1);
-    localStorage.setItem('carrito', JSON.stringify(carrito));
+    localStorage.setItem(getStorageKey('carrito'), JSON.stringify(carrito));
     mostrarCarrito();
 }
 
@@ -151,7 +155,7 @@ document.addEventListener('DOMContentLoaded', mostrarCarrito);
 
 // Vaciar el carrito completamente
 document.getElementById('vaciar-carrito').addEventListener('click', function() {
-    localStorage.removeItem('carrito');
+    localStorage.removeItem(getStorageKey('carrito'));
     mostrarCarrito();
 });
 
@@ -173,7 +177,7 @@ function mostrarNotificacion(mensaje) {
 // Proceso de compra: datos de envío, pago y confirmación
 // (incluye validaciones y guardado en historial)
 document.getElementById('finalizar-compra').addEventListener('click', function() {
-    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+    const carrito = JSON.parse(localStorage.getItem(getStorageKey('carrito'))) || [];
     if (carrito.length === 0) {
         Swal.fire({
             icon: 'warning',
@@ -402,9 +406,9 @@ document.getElementById('finalizar-compra').addEventListener('click', function()
                 }).then((resultPago) => {
                     if (resultPago.isConfirmed) {
                         // Guardar historial
-                        let historial = JSON.parse(localStorage.getItem('historialCompras')) || [];
+                        let historial = JSON.parse(localStorage.getItem(getStorageKey('historialCompras'))) || [];
                         const usuario = JSON.parse(localStorage.getItem('usuario')) || { email: 'Invitado' };
-                        const carritoActual = JSON.parse(localStorage.getItem('carrito')) || [];
+                        const carritoActual = JSON.parse(localStorage.getItem(getStorageKey('carrito'))) || [];
                         const numeroPedido = Math.floor(Math.random()*900000+100000);
                         // Recuperar provincia y costo de envío
                         const datosEnvio = JSON.parse(localStorage.getItem('datosEnvio')) || {};
@@ -462,9 +466,9 @@ document.getElementById('finalizar-compra').addEventListener('click', function()
                             metodo: resultPago.value ? resultPago.value.metodo : 'Debito',
                             recargo: recargo
                         });
-                        localStorage.setItem('historialCompras', JSON.stringify(historial));
+                        localStorage.setItem(getStorageKey('historialCompras'), JSON.stringify(historial));
 
-                        localStorage.removeItem('carrito');
+                        localStorage.removeItem(getStorageKey('carrito'));
                         mostrarCarrito();
                         Swal.fire({
                             title: '¡Compra realizada!',

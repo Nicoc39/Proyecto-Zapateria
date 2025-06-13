@@ -109,14 +109,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Función auxiliar para obtener la clave de localStorage basada en el usuario
+function getStorageKey(baseKey) {
+    const usuario = JSON.parse(localStorage.getItem('usuario')) || { email: 'invitado' };
+    return `${baseKey}_${usuario.email.replace(/[^a-zA-Z0-9]/g, '')}`;
+}
+
 // Función para agregar productos a favoritos y mostrar notificación
 function agregarAFavoritos(producto) {
     try {
-        let favoritos = JSON.parse(localStorage.getItem('favoritos')) || [];
+        let favoritos = JSON.parse(localStorage.getItem(getStorageKey('favoritos'))) || [];
         // Evita duplicados por nombre
         if (!favoritos.some(fav => fav.nombre === producto.nombre)) {
             favoritos.push(producto);
-            localStorage.setItem('favoritos', JSON.stringify(favoritos));
+            localStorage.setItem(getStorageKey('favoritos'), JSON.stringify(favoritos));
             Swal.fire({
                 icon: 'success',
                 title: '¡Agregado a Favoritos!',
