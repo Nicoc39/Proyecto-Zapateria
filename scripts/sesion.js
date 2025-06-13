@@ -1,4 +1,9 @@
-// Este script gestiona el estado de sesión del usuario y la visibilidad del menú de usuario y login.
+// =====================
+// Script de gestión de sesión de usuario, historial y favoritos
+// =====================
+
+// Al cargar la página, gestiona visibilidad de menús según sesión
+// y asigna eventos a botones de usuario
 
 document.addEventListener('DOMContentLoaded', function() {
     // Obtener usuario solo una vez
@@ -30,7 +35,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Historial de compras (ejemplo)
+    // =====================
+    // HISTORIAL DE COMPRAS
+    // =====================
     const btnHistorial = document.getElementById('btn-historial');
     if (btnHistorial) {
         btnHistorial.addEventListener('click', function() {
@@ -40,36 +47,56 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            let html = '';
+            let html = '<div style="max-width:400px;margin:auto;">';
             historial.reverse().forEach((compra, idx) => {
                 const total = compra.productos.reduce((acc, prod) => acc + prod.precio * (prod.cantidad || 1), 0);
-                // Puedes cambiar el estado según tu lógica, aquí lo dejo fijo como ejemplo
                 const estado = compra.estado || 'En preparación';
+                // Calcular recargo si corresponde
+                let precioUnitarioMultiplicador = 1;
+                if (compra.metodo === 'Credito' && compra.recargo) {
+                    precioUnitarioMultiplicador = 1 + (compra.recargo || 0);
+                }
+                const resumenProductos = compra.productos.map(item => {
+                    let precioActualizado = Math.round(item.precio * precioUnitarioMultiplicador);
+                    return `${item.nombre} x${item.cantidad || 1} - $${precioActualizado.toLocaleString('es-AR')}`;
+                }).join('<br>');
                 html += `
-                    <div style="border:1px solid #ccc; border-radius:8px; margin:18px 0; padding:16px; background:#fafafa;">
-                        <b>Compra #${historial.length - idx}</b><br>
-                        <b>Fecha:</b> ${compra.fecha}<br>
-                        <b>Usuario:</b> ${compra.usuario}<br>
-                        <b>Estado del envío:</b> ${estado}<br>
-                        <b>Productos:</b>
-                        <ul style="margin-bottom:8px;">
-                            ${compra.productos.map(item => `<li>${item.nombre} x${item.cantidad || 1} - $${item.precio.toLocaleString('es-AR')}</li>`).join('')}
-                        </ul>
-                        <b>Importe total:</b> $${total.toLocaleString('es-AR')}
+                    <div style="background:#fff; border:1px solid #e0e0e0; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:16px; padding:0;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e0e0e0; padding:8px 16px 4px 16px;">
+                            <span style="color:#444; font-weight:500;">Compra #${historial.length - idx}</span>
+                            <span style="color:#888; font-size:0.95em;">${compra.fecha}</span>
+                        </div>
+                        <div style="padding:12px 16px 0 16px; text-align:center;">
+                            <div><b>Usuario:</b> ${compra.usuario}</div>
+                            <div><b>Estado del envío:</b> ${estado}</div>
+                            ${compra.numeroPedido ? `<div><b>Número de pedido:</b> #${compra.numeroPedido}</div>` : ''}
+                            <div style=\"background:#f7f7fa; border-radius:7px; margin:12px 0 8px 0; padding:8px;\">
+                                <b>Productos:</b><br>
+                                ${resumenProductos}
+                            </div>
+                            ${compra.costoEnvio ? `<div style=\"text-align:center; margin:0 0 8px 0;\"><b>Costo de envío:</b> $${compra.costoEnvio.toLocaleString('es-AR')}</div>` : ''}
+                        </div>
+                        <div style="border-top:1px solid #e0e0e0; padding:8px 16px 8px 0; text-align:right;">
+                            <b>Importe total: $${(total * precioUnitarioMultiplicador + (compra.costoEnvio || 0)).toLocaleString('es-AR')}</b>
+                        </div>
                     </div>
                 `;
             });
-
+            html += '</div>';
             Swal.fire({
-                title: 'Mis compras',
+                title: '<span style="color:#444; font-weight:600;">Mis compras</span>',
                 html: html,
-                width: 600,
-                confirmButtonText: 'Cerrar'
+                width: 450,
+                background: '#fafbfc',
+                confirmButtonText: '<span style="padding: 0 32px;">Cerrar</span>',
+                customClass: { popup: 'swal2-miscompras-popup' }
             });
         });
     }
 
-    // Favoritos (ejemplo)
+    // =====================
+    // FAVORITOS
+    // =====================
     const btnFavoritos = document.getElementById('btn-favoritos');
     if (btnFavoritos) {
         btnFavoritos.addEventListener('click', function() {
@@ -112,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Si tienes botones "Agregar al carrito" y quieres que solo funcionen logueado:
+// Deshabilita los botones de agregar al carrito si no hay usuario logueado
 function actualizarBotonesAgregar() {
     const logueado = !!localStorage.getItem('usuario');
     document.querySelectorAll('.btn-agregar').forEach(btn => {
@@ -121,6 +148,7 @@ function actualizarBotonesAgregar() {
     });
 }
 
+// Devuelve la ruta correcta para mostrar imágenes en favoritos
 function getRutaImagenFavorito(ruta) {
     if (ruta.startsWith('/') || ruta.startsWith('http')) return ruta;
     if (window.location.pathname.includes('/Paginas/')) {

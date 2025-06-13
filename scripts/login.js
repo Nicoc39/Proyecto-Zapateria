@@ -1,6 +1,8 @@
-//// Este script gestiona el login y registro de usuarios 
- 
+// =====================
+// Script de login y registro de usuarios (simulado)
+// =====================
 
+// Al cargar la página, asigna eventos a los formularios de login y registro
 document.addEventListener('DOMContentLoaded', function() {
     // Login
     const formLogin = document.getElementById('form-login');
@@ -28,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Funciones para mostrar/ocultar formularios
+// Funciones para mostrar/ocultar formularios de login y registro
 function mostrarRegistro() {
     document.getElementById('form-login').classList.add('d-none');
     document.getElementById('form-registro').classList.remove('d-none');

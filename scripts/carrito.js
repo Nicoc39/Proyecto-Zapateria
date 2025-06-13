@@ -1,15 +1,35 @@
-//// Este script permite agregar productos al carrito, guardarlos en localStorage y mostrarlos en pantalla.
-// También muestra el total y permite vaciar todo el carrito con un botón.
+// =====================
+// Script de gestión del carrito de compras
+// =====================
 
 console.log('carrito.js correcto y actualizado');
 window.agregarAlCarrito = agregarAlCarrito;
 
-function agregarAlCarrito(nombre, precio, imagen) {
-    // Verificar si estamos en un entorno seguro (HTTPS)
+// Función principal para agregar productos al carrito
+// Si es calzado, pide talle; si es carteras, agrega directo
+function agregarAlCarrito(nombre, precio, imagen, categoria) {
+    if (categoria === 'carteras') {
+        // Agregar carteras directamente (sin talle)
+        try {
+            let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            carrito.push({ nombre, precio, imagen, categoria });
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+            mostrarNotificacion('Producto agregado al carrito');
+            mostrarCarrito();
+        } catch (error) {
+            console.error('Error al guardar en el carrito:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo agregar el producto al carrito. Por favor, intenta nuevamente.'
+            });
+        }
+        return;
+    }
+    // Para calzado, mostrar selector de talles
     if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
         console.warn('Se recomienda usar HTTPS para un funcionamiento óptimo del carrito');
     }
-
     Swal.fire({
         title: 'Selecciona el talle',
         input: 'select',
@@ -24,7 +44,7 @@ function agregarAlCarrito(nombre, precio, imagen) {
         if (result.isConfirmed && result.value) {
             try {
                 let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-                carrito.push({ nombre, precio, imagen, talle: result.value });
+                carrito.push({ nombre, precio, imagen, talle: result.value, categoria });
                 localStorage.setItem('carrito', JSON.stringify(carrito));
                 mostrarNotificacion('Producto agregado al carrito');
                 mostrarCarrito();
@@ -40,6 +60,7 @@ function agregarAlCarrito(nombre, precio, imagen) {
     });
 }
 
+// Renderiza el carrito en pantalla
 function mostrarCarrito() {
     try {
         const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
@@ -50,40 +71,57 @@ function mostrarCarrito() {
             console.error('No se encontraron los elementos del carrito en el DOM');
             return;
         }
-
         items.innerHTML = '';
         let suma = 0;
-
         if (carrito.length === 0) {
             items.innerHTML = '<p>No hay productos en el carrito.</p>';
             total.textContent = '';
             return;
         }
-
-        let html = ''; // Nueva variable para construir el HTML
+        let html = '';
         carrito.forEach((prod, idx) => {
-            html += `
-                <div class="carrito-item" style="display:flex;align-items:center;margin-bottom:10px;">
-                    <img src="${getRutaImagenFavorito(prod.imagen)}" alt="${prod.nombre}" style="width:50px;height:50px;object-fit:cover;margin-right:10px;border-radius:5px;">
-                    <div style="display:flex;flex-direction:column;">
-                        <div style="display:flex;align-items:center;">
-                            <span style="font-weight:bold;">${prod.nombre}</span>
-                            <button class="btn-eliminar-carrito" data-index="${idx}" style="background:none;border:none;color:#e74c3c;font-size:1.2em;cursor:pointer;margin-left:8px;">
-                                <i class="fa-solid fa-xmark"></i>
-                            </button>
+            // Mostrar solo precio para carteras, talle y precio para calzado
+            if (prod.categoria === 'carteras') {
+                html += `
+                    <div class="card mb-3 shadow-sm border-0 carrito-producto">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <img src="${getRutaImagenFavorito(prod.imagen)}" alt="${prod.nombre}" class="rounded me-3" style="width:60px;height:60px;object-fit:cover;">
+                                <div>
+                                    <div class="fw-bold mb-2">${prod.nombre}</div>
+                                    <div class="d-flex align-items-center" style="font-size:0.95em;">
+                                        <span class="text-secondary"><i class='fa-solid fa-tag icono-verde'></i> Precio: $${prod.precio.toLocaleString('es-AR')}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn-eliminar-carrito text-danger fs-4 p-0 ms-3" data-index="${idx}" title="Eliminar"><i class="fa-solid fa-xmark"></i></button>
                         </div>
-                        <span style="font-size:0.95em;color:#555;">Talle: ${prod.talle || '-'}</span>
-                        <span style="font-size:0.95em;color:#555;">Precio: $${prod.precio.toLocaleString('es-AR')}</span>
                     </div>
-                </div>
-            `;
+                `;
+            } else {
+                html += `
+                    <div class="card mb-3 shadow-sm border-0 carrito-producto">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <img src="${getRutaImagenFavorito(prod.imagen)}" alt="${prod.nombre}" class="rounded me-3" style="width:60px;height:60px;object-fit:cover;">
+                                <div>
+                                    <div class="fw-bold mb-2">${prod.nombre}</div>
+                                    <div class="d-flex align-items-center" style="font-size:0.95em;">
+                                        <span class="text-secondary me-3"><i class='fa-solid fa-shoe-prints icono-verde'></i> Talle: ${prod.talle || '-'} </span>
+                                        <span class="text-secondary"><i class='fa-solid fa-tag icono-verde'></i> Precio: $${prod.precio.toLocaleString('es-AR')}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn-eliminar-carrito text-danger fs-4 p-0 ms-3" data-index="${idx}" title="Eliminar"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </div>
+                `;
+            }
             suma += prod.precio;
         });
-
-        items.innerHTML = html; // Asigna el HTML construido
-        total.textContent = `Total: $${suma.toLocaleString('es-AR')}`;
-
-        // Asigna el evento a los botones "Eliminar"
+        items.innerHTML = html;
+        total.textContent = `$${suma.toLocaleString('es-AR')}`;
+        // Asignar eventos a los botones de eliminar
         document.querySelectorAll('.btn-eliminar-carrito').forEach(btn => {
             btn.addEventListener('click', function() {
                 quitarDelCarrito(this.getAttribute('data-index'));
@@ -99,7 +137,7 @@ function mostrarCarrito() {
     }
 }
 
-// Nueva función para quitar un producto del carrito
+// Elimina un producto del carrito por índice
 function quitarDelCarrito(indice) {
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     carrito.splice(indice, 1);
@@ -107,25 +145,33 @@ function quitarDelCarrito(indice) {
     mostrarCarrito();
 }
 
-// Mostrar el carrito al cargar la página
+// Mostrar el carrito al cargar la página principal
+// (para mantener la vista sincronizada)
 document.addEventListener('DOMContentLoaded', mostrarCarrito);
 
-// Vaciar el carrito al hacer clic en el botón
+// Vaciar el carrito completamente
 document.getElementById('vaciar-carrito').addEventListener('click', function() {
     localStorage.removeItem('carrito');
     mostrarCarrito();
 });
 
-// Mensaje de notificación al agregar un producto al carrito
+// Notificación visual al agregar producto al carrito
 function mostrarNotificacion(mensaje) {
-    const noti = document.getElementById('notificacion-carrito');
-    noti.textContent = mensaje;
-    noti.style.display = 'block';
-    setTimeout(() => {
-        noti.style.display = 'none';
-    }, 1500); 
+    Swal.fire({
+        icon: 'success',
+        title: mensaje,
+        confirmButtonText: 'Seguir comprando',
+        customClass: {
+            popup: 'swal2-producto-agregado'
+        },
+        timer: 1200,
+        timerProgressBar: true,
+        showConfirmButton: false
+    });
 }
 
+// Proceso de compra: datos de envío, pago y confirmación
+// (incluye validaciones y guardado en historial)
 document.getElementById('finalizar-compra').addEventListener('click', function() {
     const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     if (carrito.length === 0) {
@@ -255,16 +301,13 @@ document.getElementById('finalizar-compra').addEventListener('click', function()
                             value = value.replace(/(.{4})/g, '$1 ').trim();
                             tarjeta.value = value;
                         });
-                        // Formateo automático para fecha de vto
                         const vto = document.getElementById('swal-vto');
                         vto.addEventListener('input', function(e) {
                             let value = vto.value.replace(/\D/g, '').substring(0,4);
-                            // Formato MM/AA
                             if (value.length > 2) value = value.substring(0,2) + '/' + value.substring(2,4);
                             vto.value = value;
                         });
                         vto.addEventListener('blur', function() {
-                            // Validación de mes y año al salir del campo
                             const parts = vto.value.split('/');
                             if (parts.length === 2) {
                                 let mes = parseInt(parts[0], 10);
@@ -362,10 +405,62 @@ document.getElementById('finalizar-compra').addEventListener('click', function()
                         let historial = JSON.parse(localStorage.getItem('historialCompras')) || [];
                         const usuario = JSON.parse(localStorage.getItem('usuario')) || { email: 'Invitado' };
                         const carritoActual = JSON.parse(localStorage.getItem('carrito')) || [];
+                        const numeroPedido = Math.floor(Math.random()*900000+100000);
+                        // Recuperar provincia y costo de envío
+                        const datosEnvio = JSON.parse(localStorage.getItem('datosEnvio')) || {};
+                        const provincia = datosEnvio.provincia || 'default';
+                        const costosEnvio = {
+                            "Buenos Aires": { costo: 2500, dias: 2 },
+                            "CABA": { costo: 2000, dias: 1 },
+                            "Córdoba": { costo: 3000, dias: 3 },
+                            "Santa Fe": { costo: 3200, dias: 3 },
+                            "default": { costo: 4000, dias: 5 }
+                        };
+                        const envio = costosEnvio[provincia] || costosEnvio["default"];
+                        const costoEnvio = envio.costo;
+                        let totalProductos = carritoActual.reduce((acc, prod) => acc + prod.precio * (prod.cantidad || 1), 0);
+                        let totalFinal = totalProductos + costoEnvio;
+                        let resumenProductos = carritoActual.map(item => `<li>${item.nombre} x${item.cantidad || 1} - $${item.precio.toLocaleString('es-AR')}</li>`).join('');
+
+                        // Si es crédito y hay cuotas, recalcular precios
+                        let cuotas = resultPago.value && resultPago.value.cuotas ? parseInt(resultPago.value.cuotas) : 1;
+                        let recargo = 0;
+                        if (resultPago.value && resultPago.value.metodo === 'Credito') {
+                            if (cuotas === 3) recargo = 0.05;
+                            else if (cuotas === 6) recargo = 0.10;
+                            else if (cuotas === 12) recargo = 0.15;
+                            // Actualizar precios de productos
+                            let totalConRecargo = Math.round(totalProductos * (1 + recargo));
+                            let precioUnitarioMultiplicador = (1 + recargo);
+                            resumenProductos = carritoActual.map(item => {
+                                let precioActualizado = Math.round(item.precio * precioUnitarioMultiplicador);
+                                return `${item.nombre} x${item.cantidad || 1} - $${precioActualizado.toLocaleString('es-AR')}`;
+                            }).map(txt => `<li>${txt}</li>`).join('');
+                            totalProductos = totalConRecargo;
+                            totalFinal = totalProductos + costoEnvio;
+                        }
+
+                        // Formato de fecha y hora 24hs sin segundos
+                        function getFechaHoraFormateada() {
+                            const now = new Date();
+                            const dia = String(now.getDate()).padStart(2, '0');
+                            const mes = String(now.getMonth() + 1).padStart(2, '0');
+                            const anio = now.getFullYear();
+                            const horas = String(now.getHours()).padStart(2, '0');
+                            const minutos = String(now.getMinutes()).padStart(2, '0');
+                            return `${dia}/${mes}/${anio}, ${horas}:${minutos}`;
+                        }
+
                         historial.push({
                             usuario: usuario.email,
-                            fecha: new Date().toLocaleString(),
-                            productos: carritoActual
+                            fecha: getFechaHoraFormateada(),
+                            productos: carritoActual,
+                            numeroPedido: numeroPedido,
+                            estado: 'En preparación',
+                            costoEnvio: costoEnvio,
+                            cuotas: cuotas,
+                            metodo: resultPago.value ? resultPago.value.metodo : 'Debito',
+                            recargo: recargo
                         });
                         localStorage.setItem('historialCompras', JSON.stringify(historial));
 
@@ -374,15 +469,16 @@ document.getElementById('finalizar-compra').addEventListener('click', function()
                         Swal.fire({
                             title: '¡Compra realizada!',
                             html: `
-                                <b>Número de pedido:</b> #${Math.floor(Math.random()*900000+100000)}<br>
+                                <b>Número de pedido:</b> #${numeroPedido}<br>
                                 <b>Fecha:</b> ${new Date().toLocaleDateString()}<br>
                                 <b>Estado:</b> En preparación<br>
                                 <hr>
                                 <b>Resumen:</b>
                                 <ul style="text-align:left">
-                                    ${carritoActual.map(item => `<li>${item.nombre} x${item.cantidad || 1} - $${item.precio.toLocaleString('es-AR')}</li>`).join('')}
+                                    ${resumenProductos}
                                 </ul>
-                                <b>Total:</b> $${carritoActual.reduce((acc, prod) => acc + prod.precio * (prod.cantidad || 1), 0).toLocaleString('es-AR')}<br>
+                                <b>Costo de envío:</b> $${costoEnvio.toLocaleString('es-AR')}<br>
+                                <b>Total:</b> $${totalFinal.toLocaleString('es-AR')}<br>
                                 <hr>
                                 <b>Seguimiento:</b>
                                 <ol style="text-align:left">
