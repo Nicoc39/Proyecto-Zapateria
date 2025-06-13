@@ -139,12 +139,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Deshabilita los botones de agregar al carrito si no hay usuario logueado
+// Deshabilita los botones de agregar al carrito y favoritos si no hay usuario logueado
 function actualizarBotonesAgregar() {
     const logueado = !!localStorage.getItem('usuario');
     document.querySelectorAll('.btn-agregar').forEach(btn => {
         btn.disabled = !logueado;
         btn.title = logueado ? "" : "Debes iniciar sesión para agregar productos al carrito";
+    });
+    document.querySelectorAll('.btn-favorito').forEach(btn => {
+        btn.disabled = !logueado;
+        btn.title = logueado ? "" : "Debes iniciar sesión para agregar productos a favoritos";
+        if (!logueado) {
+            btn.onclick = function() {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Debes iniciar sesión',
+                    text: 'Inicia sesión para agregar productos a favoritos.',
+                    confirmButtonText: 'Aceptar',
+                    timer: 1500,
+                    showConfirmButton: true
+                });
+            };
+        } else {
+            btn.onclick = null;
+        }
     });
 }
 
